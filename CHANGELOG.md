@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [8.6.2] - 2026-07-17
+
+### Fixed
+- **Successful activation was reported as failure across every Activate tool.** ADT signals a clean activation with HTTP 200 and an *empty body* — the `chkl:messages` block is only sent when there is something to report. `parseActivationResponse` parsed that empty body into `{}`, found no `chkl:properties`, and defaulted `activated`/`checked`/`generated` to `false`; the handlers' `success = activated && checked` then reported `success: false` with no messages, warnings, or errors to explain it. The object *was* activated — only the reporting was wrong, which made callers retry activations that had already succeeded. The failure was inverted: an activation **with** warnings returned the `chkl:messages` block and reported `success: true`, while a **clean** one reported failure. An empty body is now read as a successful activation, fixing all 15 activate handlers (program, class, interface, DDL, table, structure, domain, data element, function group/module, service definition/binding, behavior definition, metadata extension, and the generic `ActivateObject`) through the single shared parser. Not platform-specific — it affected every system type and every object type. Verified end-to-end against a real system; adds the first unit coverage for `parseActivationResponse`, including the empty-body case.
+
 ## [8.6.1] - 2026-07-05
 
 ### Changed

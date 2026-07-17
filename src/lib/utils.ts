@@ -2129,10 +2129,31 @@ export function parseActivationResponse(responseData: any) {
   });
 
   try {
-    const data =
+    const raw =
       typeof responseData === 'string'
         ? responseData
-        : responseData?.data || JSON.stringify(responseData);
+        : (responseData?.data ?? responseData);
+
+    // ADT reports a clean activation as HTTP 200 with an empty body: the
+    // chkl:messages block is only sent when there is something to report.
+    // This is only reached on a non-throwing (2xx) response, so an empty body
+    // means every requested step ran with nothing to flag. Falling through to
+    // the parser instead would yield activated=false and report success as
+    // failure.
+    if (
+      raw === null ||
+      raw === undefined ||
+      (typeof raw === 'string' && raw.trim() === '')
+    ) {
+      return {
+        activated: true,
+        checked: true,
+        generated: true,
+        messages: [],
+      };
+    }
+
+    const data = typeof raw === 'string' ? raw : JSON.stringify(raw);
     const result = parser.parse(data);
     const properties = result['chkl:messages']?.['chkl:properties'];
     const activated =
