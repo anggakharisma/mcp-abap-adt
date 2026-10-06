@@ -99,3 +99,10 @@ desktop.ini
 # Claude Desktop bundle build output
 mcpb/build/
 mcpb/*.mcpb
+
+# Client engagement material (FSDs, specs, exports, one-off scripts).
+# Confidential — this repo is public. Kept locally under clients/<customer>/.
+clients/
+
+# Windows alternate-data-stream files copied in via WSL
+*:Zone.Identifier
