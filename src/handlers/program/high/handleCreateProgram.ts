@@ -152,15 +152,16 @@ export async function handleCreateProgram(
     });
     logger?.info(`Program created: ${programName}`);
 
+    const isInclude = args.program_type === 'include';
     const result = {
       success: true,
       program_name: programName,
       package_name: args.package_name,
       transport_request: args.transport_request || null,
       program_type: args.program_type || 'executable',
-      type: 'PROG/P',
+      type: isInclude ? 'PROG/I' : 'PROG/P',
       message: `Program ${programName} created successfully. Use UpdateProgram to set source code.`,
-      uri: `/sap/bc/adt/programs/programs/${encodeSapObjectName(programName).toLowerCase()}`,
+      uri: `/sap/bc/adt/programs/${isInclude ? 'includes' : 'programs'}/${encodeSapObjectName(programName).toLowerCase()}`,
       steps_completed: ['validate', 'create'],
     };
 
