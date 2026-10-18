@@ -33,7 +33,7 @@ export const TOOL_DEFINITION = {
       target_system: {
         type: 'string',
         description:
-          "Target system for transport (optional, e.g., 'PRD', 'QAS'). If not provided or empty, uses 'LOCAL'",
+          "Target system SID for transport (optional, e.g., 'Q01'; pass '/GROUP/' for a target group). Copy it from an existing request when unsure. If not provided or empty, uses 'LOCAL', which cannot be imported into another system",
       },
       owner: {
         type: 'string',
